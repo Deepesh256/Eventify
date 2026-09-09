@@ -1,0 +1,11 @@
+user_interest,event_category,location,booked
+music,music,chennai,1
+dance,dance,chennai,1
+tech,tech,chennai,1
+music,tech,chennai,0
+sports,music,chennai,0
+dance,sports,chennai,0
+tech,music,chennai,0
+music,dance,chennai,1
+sports,sports,chennai,1
+dance,music,chennai,1
