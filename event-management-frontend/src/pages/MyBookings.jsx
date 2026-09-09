@@ -9,6 +9,7 @@ import {
 
 import API from "../services/api";
 import Poster from "../components/Poster";
+import toast from "react-hot-toast";
 
 const getStatusStyle = (
   status
@@ -105,7 +106,7 @@ const MyBookings = () => {
             }
           );
 
-        alert(res.data.message);
+        toast.success(res.data.message);
 
         setBookings(
           (previous) =>
@@ -123,11 +124,9 @@ const MyBookings = () => {
           error
         );
 
-        alert(
-          error.response?.data
+        toast.error(error.response?.data
             ?.message ||
-            "Failed to unregister"
-        );
+            "Failed to unregister");
       }
     };
 

@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 
 import API from "../services/api";
+import toast from "react-hot-toast";
 
 // ============================================================
 // LEGACY CATEGORY SUPPORT
@@ -363,33 +364,25 @@ const EventDetails = () => {
   const handleRegister =
     async () => {
       if (!user?._id) {
-        alert(
-          "Please login to register for this event."
-        );
+        toast.error("Please login to register for this event.");
 
         return;
       }
 
       if (registered) {
-        alert(
-          "You are already registered for this event."
-        );
+        toast.error("You are already registered for this event.");
 
         return;
       }
 
       if (isCompleted) {
-        alert(
-          "Registration is closed because this event is completed."
-        );
+        toast.error("Registration is closed because this event is completed.");
 
         return;
       }
 
       if (!isEligible) {
-        alert(
-          "You are not eligible to register for this event based on your department or year."
-        );
+        toast.error("You are not eligible to register for this event based on your department or year.");
 
         return;
       }
@@ -406,10 +399,8 @@ const EventDetails = () => {
             }
           );
 
-        alert(
-          res.data.message ||
-            "Registered successfully"
-        );
+        toast.success(res.data.message ||
+            "Registered successfully");
 
         setRegistered(true);
       } catch (err) {
@@ -418,11 +409,9 @@ const EventDetails = () => {
           err
         );
 
-        alert(
-          err.response?.data
+        toast.error(err.response?.data
             ?.message ||
-            "Unable to register for this event."
-        );
+            "Unable to register for this event.");
       } finally {
         setRegistering(false);
       }

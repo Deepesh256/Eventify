@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import toast from "react-hot-toast";
 
 const interestGroups = [
   {
@@ -188,17 +189,13 @@ const Register = () => {
     }
 
     if (!form.department) {
-      alert(
-        "Please select your department"
-      );
+      toast.error("Please select your department");
 
       return;
     }
 
     if (!form.year) {
-      alert(
-        "Please select your year"
-      );
+      toast.error("Please select your year");
 
       return;
     }
@@ -206,9 +203,7 @@ const Register = () => {
     if (
       form.interests.length === 0
     ) {
-      alert(
-        "Please select at least one area of interest"
-      );
+      toast.error("Please select at least one area of interest");
 
       return;
     }
@@ -295,11 +290,9 @@ const Register = () => {
           error.message
       );
 
-      alert(
-        error.response?.data
+      toast.error(error.response?.data
           ?.message ||
-          "Registration failed"
-      );
+          "Registration failed");
     } finally {
       setLoading(false);
     }

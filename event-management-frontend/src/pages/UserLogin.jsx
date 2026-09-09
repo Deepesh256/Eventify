@@ -4,6 +4,7 @@ import {
   Link,
 } from "react-router-dom";
 import API from "../services/api";
+import toast from "react-hot-toast";
 
 const UserLogin = () => {
   const navigate = useNavigate();
@@ -70,10 +71,8 @@ const UserLogin = () => {
           error.message
       );
 
-      alert(
-        error.response?.data?.message ||
-          "Login failed"
-      );
+      toast.error(error.response?.data?.message ||
+          "Login failed");
     } finally {
       setLoading(false);
     }
@@ -98,7 +97,7 @@ const UserLogin = () => {
         }
       );
 
-      alert(res.data.message);
+      toast.success(res.data.message);
 
       setMode("verify");
     } catch (error) {
@@ -108,10 +107,8 @@ const UserLogin = () => {
           error.message
       );
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to send OTP"
-      );
+      toast.error(error.response?.data?.message ||
+          "Failed to send OTP");
     } finally {
       setLoading(false);
     }
@@ -138,7 +135,7 @@ const UserLogin = () => {
         }
       );
 
-      alert(res.data.message);
+      toast.success(res.data.message);
 
       setMode("reset");
     } catch (error) {
@@ -148,10 +145,8 @@ const UserLogin = () => {
           error.message
       );
 
-      alert(
-        error.response?.data?.message ||
-          "OTP verification failed"
-      );
+      toast.error(error.response?.data?.message ||
+          "OTP verification failed");
     } finally {
       setLoading(false);
     }
@@ -166,9 +161,7 @@ const UserLogin = () => {
       e.preventDefault();
 
       if (newPassword.length < 6) {
-        alert(
-          "Password must be at least 6 characters"
-        );
+        toast.error("Password must be at least 6 characters");
 
         return;
       }
@@ -177,9 +170,7 @@ const UserLogin = () => {
         newPassword !==
         confirmPassword
       ) {
-        alert(
-          "Passwords do not match"
-        );
+        toast.error("Passwords do not match");
 
         return;
       }
@@ -198,7 +189,7 @@ const UserLogin = () => {
           }
         );
 
-        alert(res.data.message);
+        toast.success(res.data.message);
 
         setPassword("");
         setOtp("");
@@ -213,11 +204,9 @@ const UserLogin = () => {
             error.message
         );
 
-        alert(
-          error.response?.data
+        toast.error(error.response?.data
             ?.message ||
-            "Failed to reset password"
-        );
+            "Failed to reset password");
       } finally {
         setLoading(false);
       }

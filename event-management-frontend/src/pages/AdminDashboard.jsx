@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminAPI from "../services/adminApi";
+import toast from "react-hot-toast";
 
 // ============================================================
 // PROFESSIONAL EVENT CATEGORY STRUCTURE
@@ -453,7 +454,7 @@ const isTodayEvent = (event) => {
         error
       );
 
-      alert("Failed to fetch events");
+      toast.error("Failed to fetch events");
     }
   };
 
@@ -581,9 +582,7 @@ const announcedResultsCount =
     !newEvent.date ||
     !newEvent.location.trim()
   ) {
-    alert(
-      "Please complete the basic event information"
-    );
+    toast.error("Please complete the basic event information");
     return;
   }
 
@@ -593,9 +592,7 @@ const announcedResultsCount =
     new Date(newEvent.endDate) <
       new Date(newEvent.date)
   ) {
-    alert(
-      "End date cannot be before the start date"
-    );
+    toast.error("End date cannot be before the start date");
     return;
   }
 
@@ -604,9 +601,7 @@ const announcedResultsCount =
     !newEvent.mainCategory ||
     !newEvent.category
   ) {
-    alert(
-      "Please select Main Category and Event Type"
-    );
+    toast.error("Please select Main Category and Event Type");
     return;
   }
 
@@ -614,17 +609,13 @@ const announcedResultsCount =
   if (
     newEvent.department.length === 0
   ) {
-    alert(
-      "Please select at least one eligible department"
-    );
+    toast.error("Please select at least one eligible department");
     return;
   }
 
   // Year validation
   if (newEvent.year.length === 0) {
-    alert(
-      "Please select at least one eligible year"
-    );
+    toast.error("Please select at least one eligible year");
     return;
   }
 
@@ -722,9 +713,7 @@ const announcedResultsCount =
             posterError.message
         );
 
-        alert(
-          "Poster generation failed, but the event will still be created."
-        );
+        toast("Poster generation failed, but the event will still be created.");
       }
     }
 
@@ -741,9 +730,7 @@ const announcedResultsCount =
       eventData
     );
 
-    alert(
-      "Event created successfully!"
-    );
+    toast.success("Event created successfully!");
 
     // ========================================================
     // RESET FORM
@@ -783,10 +770,8 @@ const announcedResultsCount =
         error.message
     );
 
-    alert(
-      error.response?.data?.message ||
-        "Failed to add event"
-    );
+    toast.error(error.response?.data?.message ||
+        "Failed to add event");
   } finally {
     setIsCreatingEvent(false);
   }
@@ -811,9 +796,7 @@ const announcedResultsCount =
         `/events/delete/${eventId}`
       );
 
-      alert(
-        "Event deleted successfully"
-      );
+      toast.success("Event deleted successfully");
 
       fetchEvents();
     } catch (error) {
@@ -823,10 +806,8 @@ const announcedResultsCount =
           error.message
       );
 
-      alert(
-        error.response?.data?.message ||
-          "Failed to delete event"
-      );
+      toast.error(error.response?.data?.message ||
+          "Failed to delete event");
     }
   };
 
@@ -1117,9 +1098,7 @@ const updateEvent = async (e) => {
     !date ||
     !location.trim()
   ) {
-    alert(
-      "Please complete the basic event information"
-    );
+    toast.error("Please complete the basic event information");
     return;
   }
 
@@ -1129,24 +1108,18 @@ const updateEvent = async (e) => {
     new Date(endDate) <
       new Date(date)
   ) {
-    alert(
-      "End date cannot be before the start date"
-    );
+    toast.error("End date cannot be before the start date");
     return;
   }
 
   // Category validation
   if (!mainCategory) {
-    alert(
-      "Please select Main Category"
-    );
+    toast.error("Please select Main Category");
     return;
   }
 
   if (!category) {
-    alert(
-      "Please select Event Type"
-    );
+    toast.error("Please select Event Type");
     return;
   }
 
@@ -1154,16 +1127,12 @@ const updateEvent = async (e) => {
   if (
     editDepartment.length === 0
   ) {
-    alert(
-      "Please select at least one eligible department"
-    );
+    toast.error("Please select at least one eligible department");
     return;
   }
 
   if (editYear.length === 0) {
-    alert(
-      "Please select at least one eligible year"
-    );
+    toast.error("Please select at least one eligible year");
     return;
   }
 
@@ -1201,9 +1170,7 @@ const updateEvent = async (e) => {
       updatedEventData
     );
 
-    alert(
-      "Event updated successfully!"
-    );
+    toast.success("Event updated successfully!");
 
     closeEditModal();
 
@@ -1215,10 +1182,8 @@ const updateEvent = async (e) => {
         error.message
     );
 
-    alert(
-      error.response?.data?.message ||
-        "Failed to update event"
-    );
+    toast.error(error.response?.data?.message ||
+        "Failed to update event");
   }
 };
   
@@ -1258,9 +1223,7 @@ const updateEvent = async (e) => {
           error
         );
 
-        alert(
-          "Failed to fetch participants"
-        );
+        toast.error("Failed to fetch participants");
       }
     };
 
@@ -1317,9 +1280,7 @@ const updateEvent = async (e) => {
           selectedIds.length !==
           uniqueIds.size
         ) {
-          alert(
-            "Same participant cannot be selected for multiple positions"
-          );
+          toast.error("Same participant cannot be selected for multiple positions");
 
           return;
         }
@@ -1410,9 +1371,7 @@ const updateEvent = async (e) => {
           }
         );
 
-        alert(
-          "Winners updated successfully"
-        );
+        toast.success("Winners updated successfully");
 
         fetchEvents();
       } catch (error) {
@@ -1421,9 +1380,7 @@ const updateEvent = async (e) => {
           error
         );
 
-        alert(
-          "Failed to update winners"
-        );
+        toast.error("Failed to update winners");
       }
     };
 
