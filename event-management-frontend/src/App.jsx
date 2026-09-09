@@ -4,6 +4,8 @@ import {
   Route,
 } from "react-router-dom";
 
+import { Toaster } from "react-hot-toast";
+
 import Layout from "./components/layout/Layout";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
@@ -22,6 +24,35 @@ import UserDashboard from "./pages/UserDashboard";
 function App() {
   return (
     <BrowserRouter>
+
+      {/* ========================= */}
+      {/* GLOBAL TOAST NOTIFICATIONS */}
+      {/* ========================= */}
+
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#171725",
+            color: "#ffffff",
+            border: "1px solid rgba(168, 85, 247, 0.35)",
+            borderRadius: "12px",
+            padding: "14px 18px",
+            fontSize: "14px",
+            fontWeight: "500",
+          },
+
+          success: {
+            duration: 3000,
+          },
+
+          error: {
+            duration: 4000,
+          },
+        }}
+      />
+
       <Routes>
         {/* ========================= */}
         {/* PUBLIC ROUTES */}

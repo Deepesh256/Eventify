@@ -4,6 +4,7 @@ import React, {
   useState,
 } from "react";
 
+import toast from "react-hot-toast";
 import API from "../services/api";
 
 // =========================
@@ -362,7 +363,7 @@ const Profile = () => {
         "image/"
       )
     ) {
-      alert(
+      toast.error(
         "Please select an image file."
       );
 
@@ -373,7 +374,7 @@ const Profile = () => {
       file.size >
       2 * 1024 * 1024
     ) {
-      alert(
+      toast.error(
         "Please select an image smaller than 2 MB."
       );
 
@@ -395,7 +396,7 @@ const Profile = () => {
           result
         );
       } catch {
-        alert(
+        toast.error(
           "Image is too large to save in this browser. Please choose a smaller image."
         );
       }
@@ -445,6 +446,10 @@ const Profile = () => {
       localStorage.removeItem(
         profilePhotoKey
       );
+
+      toast.success(
+        "Profile photo removed."
+      );
     };
 
   // =========================
@@ -458,6 +463,10 @@ const Profile = () => {
       localStorage.removeItem(
         coverPhotoKey
       );
+
+      toast.success(
+        "Cover photo removed."
+      );
     };
 
   // =========================
@@ -466,7 +475,7 @@ const Profile = () => {
 
   const handleSave = async () => {
     if (!storedUser?._id) {
-      alert(
+      toast.error(
         "Please login first."
       );
 
@@ -476,7 +485,7 @@ const Profile = () => {
     if (
       !profile.name.trim()
     ) {
-      alert(
+      toast.error(
         "Name is required."
       );
 
@@ -486,7 +495,7 @@ const Profile = () => {
     if (
       !profile.department
     ) {
-      alert(
+      toast.error(
         "Please select your department."
       );
 
@@ -494,7 +503,7 @@ const Profile = () => {
     }
 
     if (!profile.year) {
-      alert(
+      toast.error(
         "Please select your year."
       );
 
@@ -505,7 +514,7 @@ const Profile = () => {
       profile.interests.length ===
       0
     ) {
-      alert(
+      toast.error(
         "Please select at least one area of interest."
       );
 
@@ -573,7 +582,7 @@ const Profile = () => {
 
       setEditing(false);
 
-      alert(
+      toast.success(
         "Profile updated successfully!"
       );
     } catch (error) {
@@ -582,7 +591,7 @@ const Profile = () => {
         error
       );
 
-      alert(
+      toast.error(
         error.response?.data
           ?.message ||
           "Failed to update profile."
