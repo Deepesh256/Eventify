@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminAPI from "../services/adminApi";
 import toast from "react-hot-toast";
-
+import ConfirmModal from "../components/ConfirmModal";
 // ============================================================
 // PROFESSIONAL EVENT CATEGORY STRUCTURE
 // ============================================================
@@ -350,6 +350,9 @@ const [isCreatingEvent, setIsCreatingEvent] =
     winnerSelections,
     setWinnerSelections,
   ] = useState({});
+
+  const [deleteEventId, setDeleteEventId] =
+  useState(null);
 
   // ============================================================
   // BACKEND URL
@@ -781,35 +784,39 @@ const announcedResultsCount =
   // DELETE EVENT
   // ============================================================
 
-  const handleDelete = async (
-    eventId
-  ) => {
-    const confirmed =
-      window.confirm(
-        "Are you sure you want to delete this event?"
-      );
+const handleDelete = (eventId) => {
+  setDeleteEventId(eventId);
+};
 
-    if (!confirmed) return;
+const confirmDelete = async () => {
+  if (!deleteEventId) return;
 
-    try {
+  const eventId = deleteEventId;
+
+  try {
       await AdminAPI.delete(
         `/events/delete/${eventId}`
       );
 
       toast.success("Event deleted successfully");
+      setDeleteEventId(null);
 
       fetchEvents();
     } catch (error) {
-      console.error(
-        "DELETE ERROR:",
-        error.response?.data ||
-          error.message
-      );
+  console.error(
+    "DELETE ERROR:",
+    error.response?.data ||
+      error.message
+  );
 
-      toast.error(error.response?.data?.message ||
-          "Failed to delete event");
-    }
-  };
+  toast.error(
+    error.response?.data?.message ||
+      "Failed to delete event"
+  );
+
+  setDeleteEventId(null);
+}
+};
 
   // ============================================================
   // OPEN EDIT EVENT
@@ -2636,9 +2643,21 @@ const updateEvent = async (e) => {
           </div>
         </div>
       )}
+      <ConfirmModal
+        isOpen={Boolean(deleteEventId)}
+        title="Delete Event?"
+        message="Are you sure you want to delete this event? This action cannot be undone."
+        confirmText="Yes, Delete"
+        cancelText="Cancel"
+        danger
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteEventId(null)}
+      />
+
     </div>
   );
 };
+   
 
 // ============================================================
 // SHARED UI
@@ -3284,6 +3303,7 @@ const WinnerSelect = ({
           )
         )}
       </select>
+      
     </div>
   );
 };

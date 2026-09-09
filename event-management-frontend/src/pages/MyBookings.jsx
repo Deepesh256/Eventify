@@ -9,8 +9,8 @@ import {
 
 import API from "../services/api";
 import Poster from "../components/Poster";
+import ConfirmModal from "../components/ConfirmModal";
 import toast from "react-hot-toast";
-
 const getStatusStyle = (
   status
 ) => {
@@ -35,6 +35,9 @@ const MyBookings = () => {
 
   const [loading, setLoading] =
     useState(true);
+
+  const [unregisterEventId, setUnregisterEventId] =
+  useState(null);  
 
   const navigate =
     useNavigate();
@@ -82,17 +85,16 @@ const MyBookings = () => {
   }, [user?._id]);
 
   const handleUnregister =
-    async (eventId) => {
-      const confirmed =
-        window.confirm(
-          "Are you sure you want to unregister from this event?"
-        );
+  async (eventId) => {
+    setUnregisterEventId(eventId);
+  };
 
-      if (!confirmed) {
-        return;
-      }
+const confirmUnregister = async () => {
+  if (!unregisterEventId) return;
 
-      try {
+  const eventId = unregisterEventId;
+
+  try {
         const res =
           await API.delete(
             "/bookings/unregister",
@@ -107,6 +109,7 @@ const MyBookings = () => {
           );
 
         toast.success(res.data.message);
+        setUnregisterEventId(null);
 
         setBookings(
           (previous) =>
@@ -398,6 +401,17 @@ const MyBookings = () => {
           )}
         </div>
       )}
+
+  <ConfirmModal
+  isOpen={Boolean(unregisterEventId)}
+  title="Unregister from Event?"
+  message="Are you sure you want to unregister from this event? This action will remove your registration."
+  confirmText="Yes, Unregister"
+  cancelText="Cancel"
+  danger
+  onConfirm={confirmUnregister}
+  onCancel={() => setUnregisterEventId(null)}
+/>    
     </div>
   );
 };
