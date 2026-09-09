@@ -355,10 +355,9 @@ const [isCreatingEvent, setIsCreatingEvent] =
   // ============================================================
 
   const backendURL = (
-    AdminAPI.defaults.baseURL ||
-    "http://localhost:5000/api"
-  ).replace(/\/api\/?$/, "");
-
+  AdminAPI.defaults.baseURL ||
+  "https://eventify-backend-s1n6.onrender.com/api"
+).replace(/\/api\/?$/, "");
   // ============================================================
   // CATEGORY OPTIONS
   // ============================================================

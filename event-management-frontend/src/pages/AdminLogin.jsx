@@ -35,7 +35,7 @@ export default function AdminLogin() {
 
         const res =
           await fetch(
-            "http://localhost:5000/api/admin/login",
+            "https://eventify-backend-s1n6.onrender.com/api/admin/login",
             {
               method: "POST",
 
