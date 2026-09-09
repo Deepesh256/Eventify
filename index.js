@@ -24,10 +24,8 @@ const __dirname = path.dirname(__filename);
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:5173",
-  "https://eventify-frontend-blyny6h4v-saitej5503s-projects.vercel.app",
-  "https://eventify-frontend-lilac.vercel.app",
+  "https://eventify-gray.vercel.app",
 ];
-
 app.use(
   cors({
     origin: function (origin, callback) {
