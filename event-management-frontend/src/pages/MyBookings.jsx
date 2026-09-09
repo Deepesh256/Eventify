@@ -11,36 +11,134 @@ import API from "../services/api";
 import Poster from "../components/Poster";
 import ConfirmModal from "../components/ConfirmModal";
 import toast from "react-hot-toast";
-const getStatusStyle = (
-  status
-) => {
-  if (status === "Upcoming") {
+
+// ============================================
+// STATUS STYLE
+// ============================================
+
+const getStatusStyle = (status) => {
+  const normalizedStatus = String(
+    status || ""
+  )
+    .trim()
+    .toLowerCase();
+
+  if (normalizedStatus === "upcoming") {
     return "eventify-status-upcoming";
   }
 
-  if (status === "Ongoing") {
+  if (normalizedStatus === "ongoing") {
     return "eventify-status-ongoing";
   }
 
-  if (status === "Completed") {
+  if (normalizedStatus === "completed") {
     return "eventify-status-completed";
   }
 
   return "eventify-status-default";
 };
 
+// ============================================
+// CHECK IF EVENT IS COMPLETED
+// ============================================
+
+const checkIsCompleted = (event) => {
+  if (!event) {
+    return false;
+  }
+
+  const eventStatus = String(
+    event.eventStatus || ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const resultStatus = String(
+    event.resultStatus || ""
+  )
+    .trim()
+    .toLowerCase();
+
+  // 1. Backend explicitly says completed
+  if (eventStatus === "completed") {
+    return true;
+  }
+
+  // 2. Results have already been announced
+  // User should no longer be able to unregister.
+  if (resultStatus === "announced") {
+    return true;
+  }
+
+  // 3. Winners already exist
+  // This also means the event has finished.
+  if (
+    Array.isArray(event.winners) &&
+    event.winners.length > 0
+  ) {
+    return true;
+  }
+
+  // 4. Check event end date
+  const finalDate =
+    event.endDate || event.date;
+
+  if (!finalDate) {
+    return false;
+  }
+
+  const endDate =
+    new Date(finalDate);
+
+  if (
+    Number.isNaN(
+      endDate.getTime()
+    )
+  ) {
+    return false;
+  }
+
+  // If date is stored only as YYYY-MM-DD,
+  // allow registration/unregistration until
+  // the end of that date.
+  if (
+    typeof finalDate === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(
+      finalDate
+    )
+  ) {
+    endDate.setHours(
+      23,
+      59,
+      59,
+      999
+    );
+  }
+
+  return new Date() > endDate;
+};
+
+// ============================================
+// MY BOOKINGS
+// ============================================
+
 const MyBookings = () => {
-  const [bookings, setBookings] =
-    useState([]);
+  const [
+    bookings,
+    setBookings,
+  ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [unregisterEventId, setUnregisterEventId] =
-  useState(null);  
+  const [
+    unregisterEventId,
+    setUnregisterEventId,
+  ] = useState(null);
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
   const user = (() => {
     try {
@@ -51,6 +149,10 @@ const MyBookings = () => {
       return null;
     }
   })();
+
+  // ============================================
+  // FETCH BOOKINGS
+  // ============================================
 
   useEffect(() => {
     const fetchBookings =
@@ -76,6 +178,14 @@ const MyBookings = () => {
             "Bookings error:",
             error
           );
+
+          setBookings([]);
+
+          toast.error(
+            error.response?.data
+              ?.message ||
+              "Failed to load bookings"
+          );
         } finally {
           setLoading(false);
         }
@@ -84,41 +194,76 @@ const MyBookings = () => {
     fetchBookings();
   }, [user?._id]);
 
-  const handleUnregister =
-  async (eventId) => {
+  // ============================================
+  // VALID BOOKINGS ONLY
+  // ============================================
+
+  // Old booking records can remain if their
+  // event was deleted. Do not display or count
+  // those orphan bookings.
+
+  const visibleBookings =
+    bookings.filter(
+      (booking) =>
+        Boolean(booking.event)
+    );
+
+  // ============================================
+  // OPEN UNREGISTER MODAL
+  // ============================================
+
+  const handleUnregister = (
+    eventId
+  ) => {
     setUnregisterEventId(eventId);
   };
 
-const confirmUnregister = async () => {
-  if (!unregisterEventId) return;
+  // ============================================
+  // CONFIRM UNREGISTER
+  // ============================================
 
-  const eventId = unregisterEventId;
+  const confirmUnregister =
+    async () => {
+      if (!unregisterEventId) {
+        return;
+      }
 
-  try {
+      const eventId =
+        unregisterEventId;
+
+      try {
         const res =
           await API.delete(
             "/bookings/unregister",
             {
               data: {
-                userId:
-                  user._id,
-
                 eventId,
               },
             }
           );
 
-        toast.success(res.data.message);
+        toast.success(
+          res.data.message ||
+            "Unregistered successfully"
+        );
+
         setUnregisterEventId(null);
 
         setBookings(
           (previous) =>
             previous.filter(
-              (booking) =>
-                String(
-                  booking.eventId
-                ) !==
-                String(eventId)
+              (booking) => {
+                const bookingEventId =
+                  booking.event?._id ||
+                  booking.eventId;
+
+                return (
+                  String(
+                    bookingEventId
+                  ) !==
+                  String(eventId)
+                );
+              }
             )
         );
       } catch (error) {
@@ -127,11 +272,19 @@ const confirmUnregister = async () => {
           error
         );
 
-        toast.error(error.response?.data
+        toast.error(
+          error.response?.data
             ?.message ||
-            "Failed to unregister");
+            "Failed to unregister"
+        );
+
+        setUnregisterEventId(null);
       }
     };
+
+  // ============================================
+  // CURRENT USER WINNER
+  // ============================================
 
   const getCurrentUserWinner =
     (winners = []) =>
@@ -149,8 +302,16 @@ const confirmUnregister = async () => {
               ?.toLowerCase()
       );
 
+  // ============================================
+  // UI
+  // ============================================
+
   return (
     <div className="eventify-user-page">
+      {/* ================================= */}
+      {/* HEADER */}
+      {/* ================================= */}
+
       <div className="eventify-page-header">
         <div>
           <p className="eventify-section-label">
@@ -168,15 +329,25 @@ const confirmUnregister = async () => {
         </div>
 
         <div className="eventify-page-count">
-          {bookings.length} Booked
+          {visibleBookings.length}{" "}
+          Booked
         </div>
       </div>
+
+      {/* ================================= */}
+      {/* LOADING */}
+      {/* ================================= */}
 
       {loading ? (
         <div className="eventify-empty-state mt-8">
           Loading your bookings...
         </div>
-      ) : bookings.length === 0 ? (
+      ) : visibleBookings.length ===
+        0 ? (
+        /* ================================= */
+        /* EMPTY STATE */
+        /* ================================= */
+
         <div className="eventify-empty-state mt-8">
           <div className="text-4xl">
             🎟️
@@ -202,15 +373,15 @@ const confirmUnregister = async () => {
           </button>
         </div>
       ) : (
+        /* ================================= */
+        /* BOOKINGS GRID */
+        /* ================================= */
+
         <div className="eventify-bookings-grid mt-8">
-          {bookings.map(
+          {visibleBookings.map(
             (booking) => {
               const event =
                 booking.event;
-
-              if (!event) {
-                return null;
-              }
 
               const currentWinner =
                 getCurrentUserWinner(
@@ -218,14 +389,19 @@ const confirmUnregister = async () => {
                 );
 
               const isCompleted =
-                event.eventStatus ===
-                "Completed";
+                checkIsCompleted(
+                  event
+                );
 
               return (
                 <article
                   key={booking._id}
                   className="eventify-booking-card"
                 >
+                  {/* ================================= */}
+                  {/* POSTER */}
+                  {/* ================================= */}
+
                   <div className="eventify-booking-poster">
                     <Poster
                       event={event}
@@ -243,6 +419,10 @@ const confirmUnregister = async () => {
                       </span>
                     )}
                   </div>
+
+                  {/* ================================= */}
+                  {/* CONTENT */}
+                  {/* ================================= */}
 
                   <div className="p-5">
                     <div className="flex flex-wrap gap-2 mb-3">
@@ -266,9 +446,13 @@ const confirmUnregister = async () => {
                       </span>
                     </div>
 
+                    {/* EVENT NAME */}
+
                     <h2 className="text-xl font-bold text-white">
                       {event.name}
                     </h2>
+
+                    {/* DATE + LOCATION */}
 
                     <div className="space-y-2 text-sm text-slate-400 mt-4">
                       <p>
@@ -288,6 +472,10 @@ const confirmUnregister = async () => {
                           "Location unavailable"}
                       </p>
                     </div>
+
+                    {/* ================================= */}
+                    {/* CURRENT USER WINNER */}
+                    {/* ================================= */}
 
                     {currentWinner && (
                       <div className="eventify-winner-message">
@@ -310,6 +498,10 @@ const confirmUnregister = async () => {
                         </div>
                       </div>
                     )}
+
+                    {/* ================================= */}
+                    {/* WINNERS */}
+                    {/* ================================= */}
 
                     {event.resultStatus ===
                       "announced" &&
@@ -364,7 +556,17 @@ const confirmUnregister = async () => {
                         </div>
                       )}
 
-                    <div className="grid grid-cols-2 gap-3 mt-5">
+                    {/* ================================= */}
+                    {/* ACTION BUTTONS */}
+                    {/* ================================= */}
+
+                    <div
+                      className={`grid gap-3 mt-5 ${
+                        isCompleted
+                          ? "grid-cols-1"
+                          : "grid-cols-2"
+                      }`}
+                    >
                       <button
                         type="button"
                         onClick={() =>
@@ -377,22 +579,25 @@ const confirmUnregister = async () => {
                         View Details
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUnregister(
-                            event._id
-                          )
-                        }
-                        disabled={
-                          isCompleted
-                        }
-                        className="eventify-danger-button"
-                      >
-                        {isCompleted
-                          ? "Completed"
-                          : "Unregister"}
-                      </button>
+                      {/* Never show Unregister when:
+                          - event is Completed
+                          - results are announced
+                          - winners exist
+                          - event end date has passed */}
+
+                      {!isCompleted && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleUnregister(
+                              event._id
+                            )
+                          }
+                          className="eventify-danger-button"
+                        >
+                          Unregister
+                        </button>
+                      )}
                     </div>
                   </div>
                 </article>
@@ -402,16 +607,26 @@ const confirmUnregister = async () => {
         </div>
       )}
 
-  <ConfirmModal
-  isOpen={Boolean(unregisterEventId)}
-  title="Unregister from Event?"
-  message="Are you sure you want to unregister from this event? This action will remove your registration."
-  confirmText="Yes, Unregister"
-  cancelText="Cancel"
-  danger
-  onConfirm={confirmUnregister}
-  onCancel={() => setUnregisterEventId(null)}
-/>    
+      {/* ================================= */}
+      {/* UNREGISTER CONFIRMATION */}
+      {/* ================================= */}
+
+      <ConfirmModal
+        isOpen={Boolean(
+          unregisterEventId
+        )}
+        title="Unregister from Event?"
+        message="Are you sure you want to unregister from this event? This action will remove your registration."
+        confirmText="Yes, Unregister"
+        cancelText="Cancel"
+        danger
+        onConfirm={
+          confirmUnregister
+        }
+        onCancel={() =>
+          setUnregisterEventId(null)
+        }
+      />
     </div>
   );
 };
