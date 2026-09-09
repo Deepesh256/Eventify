@@ -233,7 +233,12 @@ const userId =
           eventId,
         });
 
-      await booking.save();
+ await booking.save();
+
+res.json({
+  message: "Registered successfully",
+  booking,
+});
 
       // =========================
       // SEND CONFIRMATION EMAIL
@@ -379,11 +384,6 @@ const userId =
       // SUCCESS
       // =========================
 
-      return res.json({
-        message:
-          "Registered successfully",
-        booking,
-      });
     } catch (error) {
       console.error(
         "Register booking error:",
