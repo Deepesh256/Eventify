@@ -34,86 +34,91 @@ const Landing = () => {
   ];
 
   return (
-    <div className="eventify-page text-white">
-      {/* ================= NAVBAR ================= */}
+    <div className="eventify-page text-white overflow-x-hidden">
+      {/* NAVBAR */}
 
       <header className="relative z-30">
-        <nav className="eventify-container flex items-center justify-between py-6">
+        <nav className="eventify-container flex items-center justify-between py-4 sm:py-6">
           <button
             type="button"
             onClick={() => navigate("/")}
-            className="flex items-center gap-3"
+            className="flex items-center gap-2 sm:gap-3"
           >
             <div className="eventify-logo">
               E
             </div>
 
             <div className="text-left">
-              <h1 className="text-xl font-bold tracking-tight">
+              <h1 className="text-lg sm:text-xl font-bold tracking-tight">
                 Eventify
               </h1>
 
-              <p className="text-[11px] text-slate-400">
+              <p className="hidden sm:block text-[11px] text-slate-400">
                 Discover. Join. Experience.
               </p>
             </div>
           </button>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => navigate("/login")}
-              className="eventify-button-secondary"
+              onClick={() =>
+                navigate("/login")
+              }
+              className="eventify-button-secondary text-xs sm:text-sm px-3 sm:px-4"
             >
-              User Login
+              Login
             </button>
 
             <button
               type="button"
-              onClick={() => navigate("/register")}
-              className="eventify-button-primary"
+              onClick={() =>
+                navigate("/register")
+              }
+              className="eventify-button-primary text-xs sm:text-sm px-3 sm:px-4"
             >
-              Create Account
+              Sign Up
             </button>
           </div>
         </nav>
       </header>
 
-      {/* ================= HERO ================= */}
-
       <main>
+        {/* HERO */}
+
         <section className="relative overflow-hidden">
           <div className="eventify-glow eventify-glow-left" />
           <div className="eventify-glow eventify-glow-right" />
 
-          <div className="eventify-container relative z-10 py-20 md:py-28">
-            <div className="grid lg:grid-cols-2 gap-14 items-center">
-              {/* LEFT */}
-
-              <div>
-                <div className="eventify-pill mb-6">
+          <div className="eventify-container relative z-10 py-12 sm:py-16 md:py-24">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+              <div className="min-w-0">
+                <div className="eventify-pill mb-5 text-xs sm:text-sm">
                   <span>🎉</span>
                   Smart Event Discovery Platform
                 </div>
 
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[1.08] tracking-tight">
                   Discover events
                   <span className="eventify-gradient-text block">
                     made for you.
                   </span>
                 </h1>
 
-                <p className="mt-7 text-lg md:text-xl text-slate-300 leading-relaxed max-w-xl">
-                  Find exciting college events, register
-                  instantly and keep track of everything
+                <p className="mt-5 sm:mt-7 text-base sm:text-lg md:text-xl text-slate-300 leading-relaxed max-w-xl">
+                  Find exciting college
+                  events, register instantly
+                  and keep track of everything
                   from one beautiful dashboard.
                 </p>
 
-                <div className="flex flex-wrap gap-4 mt-9">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-7 sm:mt-9">
                   <button
                     type="button"
-                    onClick={() => navigate("/register")}
-                    className="eventify-button-primary eventify-button-large"
+                    onClick={() =>
+                      navigate("/register")
+                    }
+                    className="eventify-button-primary eventify-button-large w-full sm:w-auto justify-center"
                   >
                     Get Started
                     <span>→</span>
@@ -121,14 +126,16 @@ const Landing = () => {
 
                   <button
                     type="button"
-                    onClick={() => navigate("/login")}
-                    className="eventify-button-secondary eventify-button-large"
+                    onClick={() =>
+                      navigate("/login")
+                    }
+                    className="eventify-button-secondary eventify-button-large w-full sm:w-auto justify-center"
                   >
                     Explore Events
                   </button>
                 </div>
 
-                <div className="flex flex-wrap gap-5 mt-10 text-sm text-slate-400">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-5 mt-8 text-xs sm:text-sm text-slate-400">
                   <span className="flex items-center gap-2">
                     <span className="text-emerald-400">
                       ✓
@@ -152,7 +159,7 @@ const Landing = () => {
                 </div>
               </div>
 
-              {/* RIGHT */}
+              {/* DESKTOP HERO CARD */}
 
               <div className="relative hidden lg:block">
                 <div className="eventify-hero-card">
@@ -173,97 +180,52 @@ const Landing = () => {
                   </div>
 
                   <div className="space-y-4">
-                    <div className="eventify-mini-event">
-                      <div className="eventify-mini-icon">
-                        💻
-                      </div>
+                    {[
+                      [
+                        "💻",
+                        "CodeSprint 2026",
+                        "Coding • Tech",
+                      ],
+                      [
+                        "🤖",
+                        "AI Innovation Day",
+                        "AI • Workshop",
+                      ],
+                      [
+                        "🎵",
+                        "Campus Music Fest",
+                        "Music • Cultural",
+                      ],
+                    ].map(
+                      ([
+                        icon,
+                        title,
+                        text,
+                      ]) => (
+                        <div
+                          key={title}
+                          className="eventify-mini-event"
+                        >
+                          <div className="eventify-mini-icon">
+                            {icon}
+                          </div>
 
-                      <div className="flex-1">
-                        <p className="font-semibold">
-                          CodeSprint 2026
-                        </p>
+                          <div className="flex-1">
+                            <p className="font-semibold">
+                              {title}
+                            </p>
 
-                        <p className="text-sm text-slate-400 mt-1">
-                          Coding • Tech
-                        </p>
-                      </div>
+                            <p className="text-sm text-slate-400 mt-1">
+                              {text}
+                            </p>
+                          </div>
 
-                      <span className="eventify-status">
-                        Upcoming
-                      </span>
-                    </div>
-
-                    <div className="eventify-mini-event">
-                      <div className="eventify-mini-icon">
-                        🤖
-                      </div>
-
-                      <div className="flex-1">
-                        <p className="font-semibold">
-                          AI Innovation Day
-                        </p>
-
-                        <p className="text-sm text-slate-400 mt-1">
-                          AI • Workshop
-                        </p>
-                      </div>
-
-                      <span className="eventify-status">
-                        Upcoming
-                      </span>
-                    </div>
-
-                    <div className="eventify-mini-event">
-                      <div className="eventify-mini-icon">
-                        🎵
-                      </div>
-
-                      <div className="flex-1">
-                        <p className="font-semibold">
-                          Campus Music Fest
-                        </p>
-
-                        <p className="text-sm text-slate-400 mt-1">
-                          Music • Cultural
-                        </p>
-                      </div>
-
-                      <span className="eventify-status">
-                        Upcoming
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute -top-7 -right-7 eventify-floating-card">
-                  <span className="text-xl">
-                    🎟️
-                  </span>
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      One click
-                    </p>
-
-                    <p className="font-semibold text-sm">
-                      Event Booking
-                    </p>
-                  </div>
-                </div>
-
-                <div className="absolute -bottom-8 -left-8 eventify-floating-card">
-                  <span className="text-xl">
-                    🏆
-                  </span>
-
-                  <div>
-                    <p className="text-xs text-slate-400">
-                      Instant updates
-                    </p>
-
-                    <p className="font-semibold text-sm">
-                      Results & Winners
-                    </p>
+                          <span className="eventify-status">
+                            Upcoming
+                          </span>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -271,7 +233,7 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* ================= CATEGORIES ================= */}
+        {/* CATEGORIES */}
 
         <section className="eventify-section">
           <div className="eventify-container">
@@ -285,25 +247,28 @@ const Landing = () => {
               </h2>
 
               <p className="eventify-section-description">
-                Explore technical, cultural, sports and
-                creative events happening around you.
+                Explore technical, cultural,
+                sports and creative events
+                happening around you.
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-3 mt-10">
-              {categories.map((category) => (
-                <div
-                  key={category}
-                  className="eventify-category"
-                >
-                  {category}
-                </div>
-              ))}
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-8 sm:mt-10">
+              {categories.map(
+                (category) => (
+                  <div
+                    key={category}
+                    className="eventify-category text-xs sm:text-sm"
+                  >
+                    {category}
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
 
-        {/* ================= FEATURES ================= */}
+        {/* FEATURES */}
 
         <section className="eventify-section">
           <div className="eventify-container">
@@ -313,71 +278,83 @@ const Landing = () => {
               </p>
 
               <h2 className="eventify-section-title">
-                Everything you need in one place
+                Everything you need in one
+                place
               </h2>
 
               <p className="eventify-section-description">
-                Eventify makes discovering, joining and
-                managing events simple.
+                Eventify makes discovering,
+                joining and managing events
+                simple.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6 mt-12">
-              {features.map((feature) => (
-                <div
-                  key={feature.title}
-                  className="eventify-feature-card"
-                >
-                  <div className="eventify-feature-icon">
-                    {feature.icon}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-12">
+              {features.map(
+                (feature) => (
+                  <div
+                    key={feature.title}
+                    className="eventify-feature-card"
+                  >
+                    <div className="eventify-feature-icon">
+                      {feature.icon}
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-bold mt-5">
+                      {feature.title}
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-slate-400 leading-relaxed mt-3">
+                      {feature.description}
+                    </p>
                   </div>
-
-                  <h3 className="text-xl font-bold mt-5">
-                    {feature.title}
-                  </h3>
-
-                  <p className="text-slate-400 leading-relaxed mt-3">
-                    {feature.description}
-                  </p>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </div>
         </section>
 
-        {/* ================= CTA ================= */}
+        {/* CTA */}
 
         <section className="eventify-section">
           <div className="eventify-container">
             <div className="eventify-cta">
               <div>
-                <p className="text-purple-300 font-semibold text-sm mb-2">
+                <p className="text-purple-300 font-semibold text-xs sm:text-sm mb-2">
                   READY TO GET STARTED?
                 </p>
 
-                <h2 className="text-3xl md:text-4xl font-bold">
-                  Your next experience is waiting.
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                  Your next experience is
+                  waiting.
                 </h2>
 
-                <p className="text-slate-300 mt-3">
-                  Create your Eventify account and start
-                  discovering events today.
+                <p className="text-sm sm:text-base text-slate-300 mt-3">
+                  Create your Eventify account
+                  and start discovering events
+                  today.
                 </p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={() => navigate("/register")}
-                  className="eventify-button-primary eventify-button-large"
+                  onClick={() =>
+                    navigate("/register")
+                  }
+                  className="eventify-button-primary eventify-button-large w-full sm:w-auto justify-center"
                 >
                   Create Account
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => navigate("/admin-login")}
-                  className="eventify-button-secondary eventify-button-large"
+                  onClick={() =>
+                    navigate(
+                      "/admin-login"
+                    )
+                  }
+                  className="eventify-button-secondary eventify-button-large w-full sm:w-auto justify-center"
                 >
                   Admin Login
                 </button>
@@ -387,10 +364,10 @@ const Landing = () => {
         </section>
       </main>
 
-      {/* ================= FOOTER ================= */}
+      {/* FOOTER */}
 
       <footer className="border-t border-white/10 mt-10">
-        <div className="eventify-container py-8 flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <div className="eventify-container py-8 flex flex-col sm:flex-row gap-4 justify-between items-center text-center sm:text-left">
           <div className="flex items-center gap-2">
             <div className="eventify-logo eventify-logo-small">
               E
